@@ -16,7 +16,7 @@
 		}
 		<h2>Welcome, @User.Identity.Name</h2>
 		if (User.IsInRole("Manager") || User.IsInRole("Admin")){
-		<a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="AddReservationPage">Add Reservation</a>
+		<a class="btn btn-primary text-white" asp-area="" asp-controller="Reservation" asp-action="AddReservationPage">Add Reservation</a>
 		}
 		<div id="reservationsTable"></div>
 		<div id="endedReservationsTable"></div>

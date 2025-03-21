@@ -24,12 +24,6 @@ namespace TemplateEfCoreIdentity.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult RegisterPage()
         {
-            if (VerifyAuth())
-            {
-                TempData["notification"] = "Errore: sei già loggato";
-                return RedirectToAction("Index", "Home");
-            }
-
             return View();
         }
 
