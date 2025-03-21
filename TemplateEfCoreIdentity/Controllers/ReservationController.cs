@@ -147,5 +147,17 @@ namespace TemplateEfCoreIdentity.Controllers
                 message = result ? "Update success" : "Error in the entity update on Db"
             });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _reservationService.DeleteReservation(id);
+
+            return Json(new
+            {
+                success = result,
+                message = result ? "Delete success" : "Error in the entity delete on Db"
+            });
+        }
     }
 }

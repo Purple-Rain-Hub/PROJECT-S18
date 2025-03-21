@@ -142,5 +142,18 @@ namespace TemplateEfCoreIdentity.Services
 
             return await SaveAsync();
         }
+
+        public async Task<bool> DeleteReservation(Guid id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+
+            if (reservation == null)
+            {
+                return false;
+            }
+
+            _context.Reservations.Remove(reservation);
+            return await SaveAsync();
+        }
     }
 }

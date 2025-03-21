@@ -104,6 +104,24 @@
 				}
 			}
 		};
+
+		async function deleteReservation(id){
+			try	{
+				const result = await fetch(`Reservation/Delete/${id}`, {
+				method: "POST"
+				})
+				const response=await result.json();
+				if(response.success){
+				loadList();
+				}
+				else throw new Error
+			}
+			catch(error){
+				console.error(error)
+			}
+
+
+		}
 	</script>
 }
 

@@ -52,7 +52,7 @@
 				@foreach (var room in Model.Rooms)
 				{
 					<div>
-						<label for="@room.RoomId">@room.Type room n. @room.Number</label>
+						<label for="@room.RoomId">@room.Type room n. @room.Number, € @room.Price</label>
 						<input type="radio" id="@room.RoomId" name="RoomId" value="@room.RoomId" asp-for="RoomId" />
 					</div>
 				}

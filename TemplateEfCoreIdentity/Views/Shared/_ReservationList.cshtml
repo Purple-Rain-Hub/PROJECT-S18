@@ -26,8 +26,8 @@
 					<td>@reservation.User.Email</td>
 					<td>@reservation.ReservationDate</td>
 					<td class=" d-flex border-0">
-						<button class="mx-1 btn btn-warning" type="button" onclick="showEditModal('@reservation.ReservationId')">Modifica</button>
-						<button class="mx-1 btn btn-danger" type="button" onclick="deleteStudent('@reservation.ReservationId')">Elimina</button>
+						<button class="mx-1 btn btn-warning" type="button" onclick="showEditModal('@reservation.ReservationId')">Edit</button>
+						<button class="mx-1 btn btn-danger" type="button" onclick="deleteReservation('@reservation.ReservationId')">Delete</button>
 					</td>
 				</tr>
 			}
