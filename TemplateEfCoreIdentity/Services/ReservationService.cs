@@ -38,7 +38,23 @@ namespace TemplateEfCoreIdentity.Services
             {
                 var reservationsList = new ReservationsViewModel();
 
-                reservationsList.Reservations = await _context.Reservations.Include(r => r.User).Include(r => r.Client).Include(r => r.Room).ToListAsync();
+                reservationsList.Reservations = await _context.Reservations.Include(r => r.User).Include(r => r.Client).Include(r => r.Room).Where(r => r.HasEnded == false).OrderByDescending(r=> r.ReservationDate).ToListAsync();
+
+                return reservationsList;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+   
+        public async Task<EndedReservationsViewModel> GetAllEndedReservationsAsync()
+        {
+            try
+            {
+                var reservationsList = new EndedReservationsViewModel();
+
+                reservationsList.Reservations = await _context.Reservations.Include(r => r.User).Include(r => r.Client).Include(r => r.Room).Where(r => r.HasEnded == true).OrderByDescending(r => r.ReservationDate).ToListAsync();
 
                 return reservationsList;
             }
@@ -57,7 +73,7 @@ namespace TemplateEfCoreIdentity.Services
         }
         public async Task<List<Room>> GetRoomsAsync(Guid roomId)
         {
-            var rooms = await _context.Rooms.Where(r => r.Reservations.All(r => r.HasEnded == true) || r.RoomId == roomId).OrderBy(r=> r.Number).ToListAsync();
+            var rooms = await _context.Rooms.Where(r => r.Reservations.All(r => r.HasEnded == true) || r.RoomId == roomId).OrderBy(r => r.Number).ToListAsync();
 
             return rooms;
         }
@@ -126,7 +142,7 @@ namespace TemplateEfCoreIdentity.Services
 
         public async Task<bool> UpdateReservation(EditReservationViewModel model)
         {
-            var reservation = await _context.Reservations.Include(r=>r.Client).FirstOrDefaultAsync(r=> r.ReservationId == model.ReservationId);
+            var reservation = await _context.Reservations.Include(r => r.Client).FirstOrDefaultAsync(r => r.ReservationId == model.ReservationId);
             if (reservation == null)
             {
                 return false;
@@ -153,6 +169,18 @@ namespace TemplateEfCoreIdentity.Services
             }
 
             _context.Reservations.Remove(reservation);
+            return await SaveAsync();
+        }
+        public async Task<bool> EndReservation(Guid id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+
+            if (reservation == null)
+            {
+                return false;
+            }
+            reservation.HasEnded = true;
+
             return await SaveAsync();
         }
     }

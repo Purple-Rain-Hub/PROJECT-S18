@@ -1,7 +1,7 @@
-﻿@model ReservationsViewModel
+﻿@model EndedReservationsViewModel
 @if (Model.Reservations != null && Model.Reservations.Any())
 {
-	<h4>Reservations</h4>
+	<h4>Ended Reservations</h4>
 	<table class="table table-bordered table-hover table-striped">
 		<thead class="thead-dark">
 			<tr class="text-center centroTab">
@@ -12,7 +12,6 @@
 				<th>Client Contacts</th>
 				<th>Insert by</th>
 				<th>Created On</th>
-				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,10 +25,6 @@
 					<td>Email: @reservation.Client.Email Phone: @reservation.Client.Phone</td>
 					<td>@reservation.User.Email</td>
 					<td>@reservation.ReservationDate</td>
-					<td class=" d-flex border-0">
-						<button class="mx-1 btn btn-warning" type="button" onclick="showEditModal('@reservation.ReservationId')">Edit</button>
-						<button class="mx-1 btn btn-danger" type="button" onclick="hasEndedFunc('@reservation.ReservationId')">Has Ended</button>
-					</td>
 				</tr>
 			}
 		</tbody>

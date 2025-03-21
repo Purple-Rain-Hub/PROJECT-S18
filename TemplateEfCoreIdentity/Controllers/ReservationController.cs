@@ -30,18 +30,36 @@ namespace TemplateEfCoreIdentity.Controllers
             }
             catch
             {
-                TempData["error"] = "Error in the loading of the reservations";
-                return RedirectToAction("Index", "Home");
+                TempData["PartialError"] = "Error in the loading of the reservations";
+                return PartialView("_ErrorPartialView");
             }
         }
-
+        [HttpGet]
+        public async Task<IActionResult> ListEndedReservations()
+        {
+            try
+            {
+                var reservationsList = await _reservationService.GetAllEndedReservationsAsync();
+                if (reservationsList == null)
+                {
+                    throw new Exception();
+                }
+                return PartialView("_EndedReservationList", reservationsList);
+            }
+            catch
+            {
+                TempData["PartialError"] = "Error in the loading of the ended reservations";
+                return PartialView("_ErrorPartialView");
+            }
+        }
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> AddReservationPage(AddReservationViewModel addReservationViewModel)
         {
             var rooms = await _reservationService.GetRoomsAsync();
             addReservationViewModel.Rooms = rooms;
             return View(addReservationViewModel);
         }
-
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> CheckEmail(string email, AddReservationViewModel addReservationViewModel)
         {
@@ -72,7 +90,7 @@ namespace TemplateEfCoreIdentity.Controllers
                 return RedirectToAction("AddReservationPage");
             }
         }
-
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> AddReservation(AddReservationViewModel model)
         {
@@ -102,7 +120,7 @@ namespace TemplateEfCoreIdentity.Controllers
             TempData["notification"] = "Reservation Successiful";
             return RedirectToAction("Index", "Home");
         }
-
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Edit(Guid id, EditReservationViewModel editReservationViewModel)
         {
             
@@ -124,7 +142,7 @@ namespace TemplateEfCoreIdentity.Controllers
 
             return PartialView("_ReservationEdit", reservationEdit);
         }
-
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> SaveEdit(EditReservationViewModel editReservationViewModel)
         {
@@ -147,7 +165,7 @@ namespace TemplateEfCoreIdentity.Controllers
                 message = result ? "Update success" : "Error in the entity update on Db"
             });
         }
-
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -157,6 +175,18 @@ namespace TemplateEfCoreIdentity.Controllers
             {
                 success = result,
                 message = result ? "Delete success" : "Error in the entity delete on Db"
+            });
+        }
+        [Authorize(Roles = "Manager, Admin")]
+        [HttpPost]
+        public async Task<IActionResult> HasEnded(Guid id)
+        {
+            var result = await _reservationService.EndReservation(id);
+
+            return Json(new
+            {
+                success = result,
+                message = result ? "Reservation end success" : "Error in the entity update 'HasEnded' on Db"
             });
         }
     }

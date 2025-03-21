@@ -15,8 +15,11 @@
 			<span class="text-danger border border-1 p-1 border-danger">@TempData["error"]</span>
 		}
 		<h2>Welcome, @User.Identity.Name</h2>
+		if (User.IsInRole("Manager") || User.IsInRole("Admin")){
 		<a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="AddReservationPage">Add Reservation</a>
+		}
 		<div id="reservationsTable"></div>
+		<div id="endedReservationsTable"></div>
 	}
 	else
 	{
@@ -44,11 +47,13 @@
 
 @section Scripts {
 	<script>
-		document.addEventListener("DOMContentLoaded", loadList);
+		document.addEventListener("DOMContentLoaded", () => {
+			loadList();
+			loadListEnded();
+		});
 
 		function loadList(){
 			let reservationsTable = document.getElementById('reservationsTable')
-
 			if(reservationsTable){
 				fetch("Reservation/ListReservations", {
 					method: "GET"
@@ -59,6 +64,21 @@
 					}
 				})
 				.then(response => reservationsTable.innerHTML = response)
+			}
+		}
+
+		function loadListEnded(){
+			let endedReservationsTable = document.getElementById('endedReservationsTable')
+			if(endedReservationsTable){
+				fetch("Reservation/ListEndedReservations", {
+					method: "GET"
+				})
+				.then(response => {
+					if(response.ok){
+						return response.text();
+					}
+				})
+				.then(response => endedReservationsTable.innerHTML = response)
 			}
 		}
 
@@ -119,8 +139,22 @@
 			catch(error){
 				console.error(error)
 			}
+		}
 
-
+		async function hasEndedFunc(id){
+			try	{
+				const result = await fetch(`Reservation/HasEnded/${id}`, {
+				method: "POST"
+				})
+				const response=await result.json();
+				if(response.success){
+				loadList();
+				}
+				else throw new Error
+			}
+			catch(error){
+				console.error(error)
+			}
 		}
 	</script>
 }

@@ -2,7 +2,7 @@
 
 namespace TemplateEfCoreIdentity.ViewModels
 {
-    public class ReservationsViewModel
+    public class EndedReservationsViewModel
     {
         public List<Reservation>? Reservations { get; set; }
     }
