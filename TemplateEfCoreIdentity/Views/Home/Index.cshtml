@@ -1,28 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Hotel Transilvania";
+	ViewData["Title"] = "Hotel Transilvania";
 }
 
 <div class="container">
-<h1>Hotel Transilvania Manager</h1>
-@if (TempData["notification"] != null)
-{
-	<span class="text-warning border border-1 p-1 border-warning">@TempData["notification"]</span>
-}
-@if (User.Identity.IsAuthenticated)
-{
-	@if (TempData["error"] != null)
+	<h1>Hotel Transilvania Manager</h1>
+	@if (TempData["notification"] != null)
 	{
-		<span class="text-danger border border-1 p-1 border-danger">@TempData["error"]</span>
+		<span class="text-warning border border-1 p-1 border-warning">@TempData["notification"]</span>
 	}
-	<h2>Welcome, @User.Identity.Name</h2>
-	<div id="reservationsTable"></div>
-}
-else
-{
-	<h2>Welcome, please Login</h2>
+	@if (User.Identity.IsAuthenticated)
+	{
+		@if (TempData["error"] != null)
+		{
+			<span class="text-danger border border-1 p-1 border-danger">@TempData["error"]</span>
+		}
+		<h2>Welcome, @User.Identity.Name</h2>
+		<a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="AddReservationPage">Add Reservation</a>
+		<div id="reservationsTable"></div>
+	}
+	else
+	{
+		<h2>Welcome, please Login</h2>
 
-	<h4 class="text-warning mt-4">Login to view the reservations</h4>
-}
+		<h4 class="text-warning mt-4">Login to view the reservations</h4>
+	}
+</div>
+
+<div id="editModal" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Product</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div id="editBody" class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
@@ -30,7 +47,7 @@ else
 		document.addEventListener("DOMContentLoaded", loadList);
 
 		function loadList(){
-			let studentsTable = document.getElementById('reservationsTable')
+			let reservationsTable = document.getElementById('reservationsTable')
 
 			if(reservationsTable){
 				fetch("Reservation/ListReservations", {
@@ -44,6 +61,49 @@ else
 				.then(response => reservationsTable.innerHTML = response)
 			}
 		}
+
+		function showEditModal(id){
+			fetch(`Reservation/Edit/${id}`)
+			.then(res => res.text())
+			.then(res=> {
+				const modalComponent = document.getElementById('editModal')
+
+				if(modalComponent){
+					let editModal = new bootstrap.Modal(modalComponent)
+					let body = document.getElementById('editBody')
+
+					if(body){
+						body.innerHTML = res
+					}
+					editModal.show();
+				}
+			})
+		};
+
+		async function sendEditForm(){
+			const form = document.getElementById('editForm');
+
+			if(form){
+				const formData = new FormData(form);
+
+				const result = await fetch(`Reservation/SaveEdit`, {
+				method: "POST",
+				body: formData
+				})
+
+				const response = await result.json();
+
+				if(response.success){
+				const modalComponent = document.getElementById('editModal');
+
+					if(modalComponent){
+						const modalComponentInstance = bootstrap.Modal.getInstance(editModal);
+						modalComponentInstance.hide();
+						loadList();
+					}
+				}
+			}
+		};
 	</script>
 }
 

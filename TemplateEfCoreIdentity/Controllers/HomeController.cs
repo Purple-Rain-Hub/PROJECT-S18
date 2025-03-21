@@ -10,5 +10,6 @@ namespace TemplateEfCoreIdentity.Controllers
         {
             return View();
         }
+
     }
 }

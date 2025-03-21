@@ -3,15 +3,9 @@ using TemplateEfCoreIdentity.Models;
 
 namespace TemplateEfCoreIdentity.ViewModels
 {
-    public class AddReservationViewModel
+    public class EditReservationViewModel
     {
-        public Guid ClientId { get; set; }
-        [Required(ErrorMessage = "First name is required")]
-        [MaxLength(30)]
-        public required string Name { get; set; }
-        [Required(ErrorMessage = "Last name is required")]
-        [MaxLength(30)]
-        public required string Surname { get; set; }
+        public Guid ReservationId { get; set; }
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Email is not valid")]
         [MaxLength(50)]
@@ -20,13 +14,13 @@ namespace TemplateEfCoreIdentity.ViewModels
         [Phone(ErrorMessage = "Phone number is not valid")]
         [MaxLength(10)]
         public required string Phone { get; set; }
+        [Required(ErrorMessage = "Room number is required")]
+        public List<Room>? Rooms { get; set; }
         [Required(ErrorMessage = "Room Id is required")]
         public required Guid RoomId { get; set; }
         [Required(ErrorMessage = "Reservation start date is required")]
         public DateTime StartDate { get; set; }
         [Required(ErrorMessage = "Reservation end date is required")]
         public DateTime EndDate { get; set; }
-        public List<Room>? Rooms { get; set; }
-        public bool IsAlreadyClient { get; set; }
     }
 }

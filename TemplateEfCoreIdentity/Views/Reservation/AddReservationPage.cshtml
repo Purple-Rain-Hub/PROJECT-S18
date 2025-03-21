@@ -1,3 +1,44 @@
-﻿@{
+﻿@model AddReservationViewModel
+@{
     ViewData["Title"] = "Hotel Transilvania";
+}
+
+<div class="container">
+	<h1>Add a reservation</h1>
+	<form id="emailCheckForm">
+		<div class="formGroup">
+			<label for="email" asp-for="Email" class="form-label"></label>
+			<input id="email" asp-for="Email" class="form-control" />
+			<span class="text-danger" asp-validation-for="Email"></span>
+		</div>
+		<div class="m-2 text-end">
+			<button class="btn btn-sm btn-success" type="button" onclick="reservationFormFunc()" >Check Client</button>
+			<button class="btn btn-sm btn-warning" type="reset">Reset</button>
+		</div>
+	</form>
+	<div id="reservationForm"></div>
+</div>
+
+@section Scripts {
+	<script>
+
+		function reservationFormFunc(){
+			let partialView = document.getElementById('reservationForm')
+			const reservationsForm = document.getElementById('emailCheckForm')
+			const formData = new FormData(reservationsForm)
+
+			if(partialView){
+				fetch('/Reservation/CheckEmail', {
+					method: "POST",
+					body: formData
+				})
+				.then(response => {
+					if(response.ok){
+						return response.text();
+					}
+				})
+				.then(response => partialView.innerHTML = response)
+			}
+		}
+	</script>
 }
