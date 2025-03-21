@@ -1,0 +1,38 @@
+﻿@model ReservationsViewModel
+@if(Model.Reservations != null && Model.Reservations.Any()){
+<table class="table table-bordered table-hover table-striped">
+	<thead class="thead-dark">
+		<tr class="text-center centroTab">
+			<th>Id Reservation</th>
+			<th>Reservation Date</th>
+			<th>Room Number</th>
+			<th>Client Name</th>
+			<th>Client Contacts</th>
+			<th>Insert by</th>
+			<th>Created On</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var reservation in Model.Reservations)
+		{
+			<tr class="centroTab">
+				<td>@reservation.ReservationId</td>
+				<td>From @reservation.StartDate To @reservation.EndDate</td>
+				<td>Room: @reservation.Room.Number</td>
+				<td>@reservation.Client.Name @reservation.Client.Surname</td>
+				<td>Email: @reservation.Client.Email Phone: @reservation.Client.Phone</td>
+				<td>@reservation.ReservationDate</td>
+				<td>@reservation.User.Email</td>
+				<td class=" d-flex border-0">
+					<button class="mx-1 btn btn-warning" type="button" onclick="showEditModal('@reservation.ReservationId')">Modifica</button>
+					<button class="mx-1 btn btn-danger" type="button" onclick="deleteStudent('@reservation.ReservationId')">Elimina</button>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+}
+else{
+	<span class="text-danger border border-1 p-1 border-danger">No reservation found</span>
+}

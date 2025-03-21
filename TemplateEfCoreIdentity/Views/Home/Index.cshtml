@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Hotel Transilvania";
+}
+
+<div class="container">
+<h1>Hotel Transilvania Manager</h1>
+@if (TempData["notification"] != null)
+{
+	<span class="text-warning border border-1 p-1 border-warning">@TempData["notification"]</span>
+}
+@if (User.Identity.IsAuthenticated)
+{
+	@if (TempData["error"] != null)
+	{
+		<span class="text-danger border border-1 p-1 border-danger">@TempData["error"]</span>
+	}
+	<h2>Welcome, @User.Identity.Name</h2>
+	<div id="reservationsTable"></div>
+}
+else
+{
+	<h2>Welcome, please Login</h2>
+
+	<h4 class="text-warning mt-4">Login to view the reservations</h4>
+}
+</div>
+
+@section Scripts {
+	<script>
+		document.addEventListener("DOMContentLoaded", loadList);
+
+		function loadList(){
+			let studentsTable = document.getElementById('reservationsTable')
+
+			if(reservationsTable){
+				fetch("Reservation/ListReservations", {
+					method: "GET"
+				})
+				.then(response => {
+					if(response.ok){
+						return response.text();
+					}
+				})
+				.then(response => reservationsTable.innerHTML = response)
+			}
+		}
+	</script>
+}
+
